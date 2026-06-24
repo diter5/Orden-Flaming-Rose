@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Orden Flaming Rose</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/HTrxIe6.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; user-drag: none; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Comfortaa', cursive; background-color: #200505; color: #ff9999; height: 100vh; overflow: hidden; position: relative; }
+        #effect-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
+        #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        
+        .main-content { height: 100vh; padding: 50px 5% 50px 5%; overflow-y: auto; z-index: 5; position: relative; display: flex; flex-direction: column; align-items: center; }
+        
+        #header-block { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
+        .sidebar-widget { width: 100%; max-width: 900px; background: rgba(40, 0, 0, 0.85); padding: 20px; border-radius: 10px; border: 1px solid rgba(255, 0, 0, 0.3); margin-bottom: 20px; text-align: center; z-index: 10; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .server-link { color: #ff3333; text-decoration: none; font-weight: bold; }
+        
+        .main-title { margin: 20px 0; text-align: center; color: #fff; font-size: 48px; text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 0 20px #ff0000; z-index: 10; animation: titleGlow 4s ease-in-out infinite alternate; }
+        @keyframes titleGlow { from { text-shadow: 0 0 20px rgba(255,0,0,0.5); } to { text-shadow: 0 0 40px #ff3333; } }
+
+        .center-image { width: 450px; cursor: pointer; border-radius: 10px; z-index: 10; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .center-image:hover { transform: scale(1.05); }
+
+        .nav-container { display: flex; gap: 15px; z-index: 20; margin-bottom: 30px; }
+        .nav-item { padding: 10px 20px; background: rgba(60, 0, 0, 0.8); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 50px; cursor: pointer; color: #ff6666; backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .nav-item:hover, .nav-item.active { color: #fff; border-color: rgba(255, 0, 0, 0.6); box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
+        
+        .content-section { display: none; width: 100%; max-width: 900px; position: relative; z-index: 6; }
+        .content-section.show { display: flex; flex-direction: column; align-items: center; }
+        .content-section.show .sidebar-widget, 
+        .content-section.show .info-box,
+        .content-section.show .center-image { opacity: 1; transform: translateY(0); }
+        
+        .info-box { background: rgba(40, 0, 0, 0.85); padding: 40px; border-radius: 4px; backdrop-filter: blur(8px); border: 1px solid rgba(255, 0, 0, 0.3); margin-bottom: 20px; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .info-box h3 { color: #ff9999; margin-bottom: 20px; font-size: 28px; border-bottom: 1px solid #ff3333; display: inline-block; padding-bottom: 5px; }
+        .info-box p { font-size: 18px; color: #ffcccc; margin-bottom: 20px; line-height: 1.6; }
+        .staff-list { font-size: 20px; color: #ffcccc; line-height: 2.2; }
+        .role { color: #ff3333; font-weight: bold; }
+        .divider { border: none; border-top: 1px solid rgba(255, 0, 0, 0.3); margin: 15px 0; }
+        
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-track { background: rgba(40, 0, 0, 0.3); }
+        .main-content::-webkit-scrollbar-thumb { background: #ff3333; border-radius: 4px; }
+        
+        .footer-links { position: fixed; bottom: 20px; left: 20px; display: flex; gap: 15px; z-index: 100; }
+        .footer-link { color: #ff6666; text-decoration: none; font-size: 14px; padding: 5px 10px; background: rgba(40, 0, 0, 0.7); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <canvas id="effect-canvas"></canvas>
+    <div class="main-content">
+        <canvas id="bg-canvas"></canvas>
+        
+        <div id="header-block">
+            <h1 class="main-title">Орден Пылающей Розы</h1>
+        </div>
+
+        <div class="nav-container" id="nav-menu">
+            <div class="nav-item active" onclick="showSection('home')" id="menu-home">Меню</div>
+            <div class="nav-item" onclick="showSection('info')" id="menu-info">Информация</div>
+            <div class="nav-item" onclick="showSection('history')" id="menu-history">История</div>
+            <div class="nav-item" onclick="showSection('staff')" id="menu-staff">КМД Состав</div>
+            <div class="nav-item" onclick="showSection('departments')" id="menu-departments">Отделы</div>
+        </div>
+
+        <div id="home" class="content-section show">
+            <div class="sidebar-widget">
+                <p>40+ участников | На данный момент находимся на сервере <a href="https://discord.gg/7rGWSC5Sm" target="_blank" class="server-link">ASTRUM</a></p>
+            </div>
+            <img src="https://i.imgur.com/LwydfYQ.png" alt="Orden Logo" class="center-image" referrerpolicy="no-referrer">
+        </div>
+
+        <div id="info" class="content-section">
+            <div class="info-box">
+                <h3>Информация об Ордене</h3>
+                <p><strong>Орден Пылающей Розы</strong> был основан 9 февраля 2022 года. Изначально он носил название «Орден Крестоносцев» и был создан на сервере Харальдмайн. С тех пор Орден прошёл долгий путь развития и трансформации, став дружным и сплочённым комьюнити, которое нацелено на создание уникальной атмосферы, где каждый игрок может получить удовольствие от процесса и развиваться.</p>
+                <p>Мы стремимся к созданию пространства, где каждый может не только наслаждаться игрой, но и учиться новому, развивать навыки и строить крепкие отношения с другими участниками.</p>
+            </div>
+        </div>
+        <div id="history" class="content-section">
+            <div class="info-box">
+                <h3>История</h3>
+                <p>Пока что в разработке..</p>
+            </div>
+        </div>
+        <div id="staff" class="content-section">
+            <div class="info-box">
+                <h3>КМД Состав</h3>
+                <div class="staff-list">
+                    <p><span class="role">Магистр Ордена Пылающей Розы</span> - zUmal0k</p>
+                    <div class="divider"></div>
+                    <span class="role">Маршал</span> - PanPahan<br>
+                    <span class="role">Маршал</span> - Hramovnik123434<br>
+                    <div class="divider"></div>
+                    <p><span class="role">Дисциплинарный комитет</span> - Makteno<br><span class="role">Дисциплинарный комитет</span> - Hramovnik123434<br>
+                    <div class="divider"></div>
+                    <p><span class="role">Глава Инженерного Отдела</span> - PanPahan<br><span class="role">Глава Строительного Отдела</span> - reichi25<br><span class="role">Глава Экономического Отдела</span> - KATARS1S<br><span class="role">Глава Инквизиторного Отдела</span> - yosshimurae_<br>
+                    <div class="divider"></div>
+                    <p><span class="role">Заместитель Главы Инженеров</span> - zqalex<br><span class="role">Заместитель Главы Инженеров</span> - diteryx<br><span class="role">Заместитель Главы Экономики</span> - dantez7892<br><span class="role">Заместитель Главы Экономики</span> - YIBEIYHRE<br><span class="role">Заместитель Главы Строителей</span> - warden587<br><span class="role">Заместитель Главы Строителей</span> - PoisonsKnight<br><span class="role">Заместитель Главы Инквизитория</span> - Flaunch<br></p>
+                </div>
+            </div>
+        </div>
+        <div id="departments" class="content-section">
+            <div class="info-box">
+                <h3>Отделы</h3>
+                <p><a href="https://diter5.github.io/ofr-builders/" target="_blank" class="server-link">Строительный Отдел</a></p>
+                <p><a href="https://diter5.github.io/ofr-engineering/" target="_blank" class="server-link">Инженерный Отдел</a></p>
+                <p><a href="https://diter5.github.io/ofr-economic/" target="_blank" class="server-link">Экономический Отдел</a></p>
+                <p><a href="https://pv-p-tier-list--jjjg64923.replit.app/" target="_blank" class="server-link">Инквизиторий</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <a href="https://t.me/ordenflamingrose" target="_blank" class="footer-link">Telegram</a>
+        <a href="https://discord.gg/9naN9bSvxb" target="_blank" class="footer-link">Discord</a>
+        <a href="https://youtube.com/@ordenflamingrose?si=r2qlSi5FmOnm_KME" target="_blank" class="footer-link">YouTube</a>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.classList.remove('show');
+                s.style.display = 'none';
+            });
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            const targetSection = document.getElementById(sectionId);
+            
+            document.getElementById('header-block').style.display = (sectionId === 'home') ? 'flex' : 'none';
+            document.getElementById('menu-' + sectionId).classList.add('active');
+            
+            targetSection.style.display = 'flex';
+            requestAnimationFrame(() => {
+                targetSection.classList.add('show');
+            });
+        }
+
+        const clickCanvas = document.getElementById('effect-canvas'); 
+        const clickCtx = clickCanvas.getContext('2d'); 
+        let ringsArray = []; 
+        const bgCanvas = document.getElementById('bg-canvas'); 
+        const bgCtx = bgCanvas.getContext('2d'); 
+        let particlesArray = []; 
+        let audioCtx = null;
+
+        function playMechanicalClickSound() { 
+            try { 
+                if (!audioCtx) { const AudioContext = window.AudioContext || window.webkitAudioContext; audioCtx = new AudioContext(); } 
+                if (audioCtx.state === 'suspended') audioCtx.resume(); 
+                const now = audioCtx.currentTime; 
+                const osc = audioCtx.createOscillator(); 
+                const mainGain = audioCtx.createGain(); 
+                osc.type = 'triangle'; 
+                osc.frequency.setValueAtTime(150, now); 
+                osc.frequency.exponentialRampToValueAtTime(90, now + 0.045); 
+                mainGain.gain.setValueAtTime(0.7, now); 
+                mainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045); 
+                osc.connect(mainGain); 
+                mainGain.connect(audioCtx.destination); 
+                osc.start(); 
+                osc.stop(now + 0.045); 
+            } catch (e) { } 
+        }
+
+        function resizeCanvases() { 
+            clickCanvas.width = window.innerWidth; 
+            clickCanvas.height = window.innerHeight; 
+            bgCanvas.width = window.innerWidth; 
+            bgCanvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resizeCanvases); 
+        resizeCanvases();
+
+        class ClickRing { 
+            constructor(x, y) { this.x = x; this.y = y; this.radius = 2; this.maxRadius = 45; this.alpha = 1; this.speed = 1.8; } 
+            update() { this.radius += this.speed; this.alpha = 1 - (this.radius / this.maxRadius); } 
+            draw() { 
+                if (this.alpha <= 0) return; 
+                clickCtx.save(); 
+                clickCtx.globalAlpha = this.alpha; 
+                clickCtx.beginPath(); 
+                clickCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                clickCtx.lineWidth = 2; 
+                clickCtx.strokeStyle = 'rgba(255, 0, 0, 0.9)'; 
+                clickCtx.stroke(); 
+                clickCtx.restore(); 
+            } 
+        }
+
+        class BgParticle { 
+            constructor() { this.reset(true); } 
+            reset(randomY = false) { 
+                this.x = Math.random() * bgCanvas.width; 
+                this.y = randomY ? Math.random() * bgCanvas.height : -10; 
+                this.size = Math.random() * 2.8 + 0.4; 
+                this.speedY = (this.size * 0.3) + Math.random() * 0.4 + 0.2; 
+                this.alpha = Math.random() * 0.6 + 0.15; 
+            } 
+            update() { this.y += this.speedY; if (this.y > bgCanvas.height) this.reset(); } 
+            draw() { 
+                bgCtx.save(); 
+                bgCtx.globalAlpha = this.alpha; 
+                bgCtx.beginPath(); 
+                bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
+                bgCtx.fillStyle = '#ff6666'; 
+                bgCtx.fill(); 
+                bgCtx.restore(); 
+            } 
+        }
+
+        function initBgParticles() { 
+            particlesArray = []; 
+            for (let i = 0; i < 180; i++) particlesArray.push(new BgParticle()); 
+        }
+        initBgParticles();
+
+        window.addEventListener('click', function(event) { 
+            ringsArray.push(new ClickRing(event.clientX, event.clientY)); 
+            playMechanicalClickSound(); 
+        });
+
+        function animate() { 
+            clickCtx.clearRect(0, 0, clickCanvas.width, clickCanvas.height); 
+            for (let i = 0; i < ringsArray.length; i++) { 
+                ringsArray[i].update(); 
+                ringsArray[i].draw(); 
+                if (ringsArray[i].radius >= ringsArray[i].maxRadius) { ringsArray.splice(i, 1); i--; } 
+            } 
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height); 
+            for (let i = 0; i < particlesArray.length; i++) { 
+                particlesArray[i].update(); 
+                particlesArray[i].draw(); 
+            } 
+            requestAnimationFrame(animate); 
+        }
+        animate();
+    </script>
+</body>
+</html>
