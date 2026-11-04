@@ -12,30 +12,41 @@
         #effect-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
         #bg-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         
-        .main-content { height: 100vh; padding: 50px 5% 50px 5%; overflow-y: auto; z-index: 5; position: relative; display: flex; flex-direction: column; align-items: center; }
+        .main-content { height: 100vh; padding: 40px 5%; overflow-y: auto; z-index: 5; position: relative; display: flex; flex-direction: column; align-items: center; }
         
         #header-block { width: 100%; display: flex; flex-direction: column; align-items: center; }
         
-        .sidebar-widget { width: 100%; max-width: 900px; background: rgba(40, 0, 0, 0.85); padding: 20px; border-radius: 10px; border: 1px solid rgba(255, 0, 0, 0.3); margin-bottom: 20px; text-align: center; z-index: 10; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .server-link { color: #ff3333; text-decoration: none; font-weight: bold; }
-        
-        .main-title { margin: 20px 0; text-align: center; color: #fff; font-size: 48px; text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 0 20px #ff0000; z-index: 10; animation: titleGlow 4s ease-in-out infinite alternate; }
+        .main-title { margin: 15px 0 25px 0; text-align: center; color: #fff; font-size: 42px; text-transform: uppercase; letter-spacing: 4px; text-shadow: 0 0 20px #ff0000; z-index: 10; animation: titleGlow 4s ease-in-out infinite alternate; }
         @keyframes titleGlow { from { text-shadow: 0 0 20px rgba(255,0,0,0.5); } to { text-shadow: 0 0 40px #ff3333; } }
 
-        .center-image { width: 450px; cursor: pointer; border-radius: 10px; z-index: 10; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .center-image:hover { transform: scale(1.05); }
+        /* Стили главной страницы */
+        .home-container { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 850px; z-index: 10; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .content-section.show .home-container { opacity: 1; transform: translateY(0); }
 
-        .nav-container { display: flex; gap: 15px; z-index: 20; margin-bottom: 30px; }
-        .nav-item { padding: 10px 20px; background: rgba(60, 0, 0, 0.8); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 50px; cursor: pointer; color: #ff6666; backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .logo-wrapper { position: relative; margin-bottom: 25px; padding: 10px; background: rgba(40, 0, 0, 0.6); border-radius: 20px; border: 1px solid rgba(255, 0, 0, 0.4); box-shadow: 0 0 30px rgba(255, 0, 0, 0.2); }
+        .center-image { width: 240px; height: 240px; object-fit: cover; border-radius: 15px; display: block; transition: transform 0.4s ease; }
+        .center-image:hover { transform: scale(1.03); }
+
+        .welcome-card { width: 100%; background: rgba(40, 0, 0, 0.85); padding: 25px 30px; border-radius: 12px; border: 1px solid rgba(255, 0, 0, 0.35); margin-bottom: 25px; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+        .welcome-card h2 { color: #fff; font-size: 24px; margin-bottom: 12px; text-shadow: 0 0 10px rgba(255,50,50,0.5); }
+        .welcome-card p { font-size: 16px; color: #ffcccc; line-height: 1.6; }
+        .server-link { color: #ff4d4d; text-decoration: none; font-weight: bold; transition: color 0.2s; }
+        .server-link:hover { color: #ff1a1a; text-decoration: underline; }
+
+        /* Сетка виджетов по центру */
+        .widgets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%; margin-bottom: 40px; }
+        .widget-item { background: rgba(50, 0, 0, 0.8); border: 1px solid rgba(255, 0, 0, 0.3); padding: 15px 20px; border-radius: 10px; text-align: center; text-decoration: none; color: #ff9999; font-weight: bold; backdrop-filter: blur(8px); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .widget-item:hover { background: rgba(80, 0, 0, 0.9); border-color: rgba(255, 0, 0, 0.8); color: #fff; transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255, 0, 0, 0.3); }
+
+        .nav-container { display: flex; gap: 12px; z-index: 20; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+        .nav-item { padding: 10px 20px; background: rgba(60, 0, 0, 0.8); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 50px; cursor: pointer; color: #ff6666; backdrop-filter: blur(10px); transition: all 0.3s ease; }
         .nav-item:hover, .nav-item.active { color: #fff; border-color: rgba(255, 0, 0, 0.6); box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
         
         .content-section { display: none; width: 100%; max-width: 900px; position: relative; z-index: 6; }
         .content-section.show { display: flex; flex-direction: column; align-items: center; }
-        .content-section.show .sidebar-widget, 
-        .content-section.show .info-box,
-        .content-section.show .center-image { opacity: 1; transform: translateY(0); }
+        .content-section.show .info-box { opacity: 1; transform: translateY(0); }
         
-        .info-box { background: rgba(40, 0, 0, 0.85); padding: 40px; border-radius: 4px; backdrop-filter: blur(8px); border: 1px solid rgba(255, 0, 0, 0.3); margin-bottom: 20px; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .info-box { background: rgba(40, 0, 0, 0.85); padding: 40px; border-radius: 10px; backdrop-filter: blur(8px); border: 1px solid rgba(255, 0, 0, 0.3); margin-bottom: 20px; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
         .info-box h3 { color: #ff9999; margin-bottom: 20px; font-size: 28px; border-bottom: 1px solid #ff3333; display: inline-block; padding-bottom: 5px; }
         .info-box p { font-size: 18px; color: #ffcccc; margin-bottom: 20px; line-height: 1.6; }
         .staff-list { font-size: 20px; color: #ffcccc; line-height: 2.2; }
@@ -45,9 +56,6 @@
         .main-content::-webkit-scrollbar { width: 8px; }
         .main-content::-webkit-scrollbar-track { background: rgba(40, 0, 0, 0.3); }
         .main-content::-webkit-scrollbar-thumb { background: #ff3333; border-radius: 4px; }
-        
-        .footer-links { position: fixed; bottom: 20px; left: 20px; display: flex; gap: 15px; z-index: 100; }
-        .footer-link { color: #ff6666; text-decoration: none; font-size: 14px; padding: 5px 10px; background: rgba(40, 0, 0, 0.7); border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -60,33 +68,49 @@
         </div>
 
         <div class="nav-container" id="nav-menu">
-            <div class="nav-item active" onclick="showSection('home')" id="menu-home">Меню</div>
+            <div class="nav-item active" onclick="showSection('home')" id="menu-home">Главная</div>
             <div class="nav-item" onclick="showSection('info')" id="menu-info">Информация</div>
             <div class="nav-item" onclick="showSection('history')" id="menu-history">История</div>
             <div class="nav-item" onclick="showSection('staff')" id="menu-staff">КМД Состав</div>
             <div class="nav-item" onclick="showSection('departments')" id="menu-departments">Отделы</div>
         </div>
 
+        <!-- ГЛАВНАЯ СТРАНИЦА -->
         <div id="home" class="content-section show">
-            <div class="sidebar-widget">
-                <p>40+ участников | На данный момент находимся на сервере <a href=https://discord.gg/udXqCWHkfF" target="_blank" class="server-link">ShyMiners</a></p>
+            <div class="home-container">
+                <div class="logo-wrapper">
+                    <img src="logo.png" alt="Orden Logo" class="center-image">
+                </div>
+                
+                <div class="welcome-card">
+                    <h2>Добро пожаловать в владения ОФР</h2>
+                    <p>Более <strong>40 верных бойцов и соратников</strong> объединены общей целью. Наш Орден базируется на проекте <a href="https://discord.gg/hn4Zhn5uN" target="_blank" class="server-link">ShyMiners</a>, где мы возводим грандиозные постройки и развиваем могущественную инфраструктуру.</p>
+                </div>
+
+                <div class="widgets-grid">
+                    <a href="https://discord.gg/9naN9bSvxb" target="_blank" class="widget-item">💬 Discord</a>
+                    <a href="https://t.me/ordenflamingrose" target="_blank" class="widget-item">📢 Telegram</a>
+                    <a href="https://youtube.com/@ordenflamingrose?si=r2qlSi5FmOnm_KME" target="_blank" class="widget-item">▶️ YouTube</a>
+                </div>
             </div>
-            <img src="logo.png" alt="Orden Logo" class="center-image">
         </div>
 
         <div id="info" class="content-section">
             <div class="info-box">
-                <h3>Информация об Ордене</h3>
-                <p><strong>Орден Пылающей Розы</strong> был основан 9 февраля 2022 года. Изначально он носил название «Орден Крестоносцев» и был создан на сервере Харальдмайн. С тех пор Орден прошёл долгий путь развития и трансформации, став дружным и сплочённым комьюнити, которое нацелено на создание уникальной атмосферы, где каждый игрок может получить удовольствие от процесса и развиватся.</p>
-                <p>Мы стремимся к созданию пространства, где каждый может не только наслаждатся игрой, но и учится новому, развивать навыки и строить крепкие отношения с другими участниками.</p>
+                <h3>Об Ордене Пылающей Розы (ОФР)</h3>
+                <p><strong>Орден Пылающей Розы (ОФР)</strong> — это сплоченное и амбициозное сообщество в Minecraft, основанное 9 февраля 2022 года. Свою историю мы начинали как «Орден Крестоносцев» на сервере Харальдмайн, после чего прошли долгий путь трансформаций.</p>
+                <p>В настоящий момент клан базируется и активно развивается на ванильном+ сервере <strong>ShyMiners</strong>. Мы объединяем игроков, нацеленных на масштабное строительство, сложную инженерию, экономическое развитие и защиту порядка.</p>
+                <p>Наша цель — создать уникальную атмосферу командной игры, где каждый участник может реализовать свой потенциал, внести вклад в общее дело и найти надежных друзей.</p>
             </div>
         </div>
+        
         <div id="history" class="content-section">
             <div class="info-box">
                 <h3>История</h3>
                 <p>Пока что в разработке..</p>
             </div>
         </div>
+        
         <div id="staff" class="content-section">
             <div class="info-box">
                 <h3>КМД Состав</h3>
@@ -96,15 +120,15 @@
                     <span class="role">Маршал</span> - PanPahan<br>
                     <span class="role">Маршал</span> - Hramovnik123434<br>
                     <div class="divider"></div>
+                    <p><span class="role">Дисциплинарный комитет</span> - Makteno<br><span class="role">Дисциплинарный комитет</span> - Hramovnik123434</p>
                     <div class="divider"></div>
-                    <p><span class="role">Дисциплинарный комитет</span> - Makteno<br><span class="role">Дисциплинарный комитет</span> - Hramovnik123434<br>
+                    <p><span class="role">Глава Инженерного Отдела</span> - MrVime<br><span class="role">Глава Строительного Отдела</span> - Makteno<br><span class="role">Глава Экономического Отдела</span> - grenchik499<br><span class="role">Глава Инквизиторного Отдела</span> - Flaunch</p>
                     <div class="divider"></div>
-                    <p><span class="role">Глава Инженерного Отдела</span> - MrVime<br><span class="role">Глава Строительного Отдела</span> - Makteno<br><span class="role">Глава Экономического Отдела</span> - grenchik499<br><span class="role">Глава Инквизиторного Отдела</span> - Flaunch<br>
-                    <div class="divider"></div>
-                    <p><span class="role">Заместитель Главы Инженеров</span> - Larant_s<br><span class="role">Заместитель Главы Инженеров</span> - PanPahan<br><span class="role">Заместитель Главы Экономики</span> - ...<br><span class="role">Заместитель Главы Экономики</span> - dantez7892<br><span class="role">Заместитель Главы Строителей</span> - PoisonsKnight<br><span class="role">Заместитель Главы Строителей</span> - Pupkintrue<br><span  class="role">Заместитель Главы Инквизитория</span> - norfiqe<br></p>
+                    <p><span class="role">Заместитель Главы Инженеров</span> - Larant_s<br><span class="role">Заместитель Главы Инженеров</span> - PanPahan<br><span class="role">Заместитель Главы Экономики</span> - ...<br><span class="role">Заместитель Главы Экономики</span> - dantez7892<br><span class="role">Заместитель Главы Строителей</span> - PoisonsKnight<br><span class="role">Заместитель Главы Строителей</span> - Pupkintrue<br><span class="role">Заместитель Главы Инквизитория</span> - norfiqe</p>
                 </div>
             </div>
         </div>
+        
         <div id="departments" class="content-section">
             <div class="info-box">
                 <h3>Отделы</h3>
@@ -114,12 +138,6 @@
                 <p><a href="https://ofr-tiers.lovable.app/" target="_blank" class="server-link">Инквизиторий</a></p>
             </div>
         </div>
-    </div>
-
-    <div class="footer-links">
-        <a href="https://t.me/ordenflamingrose" target="_blank" class="footer-link">Telegram</a>
-        <a href="https://discord.gg/9naN9bSvxb" target="_blank" class="footer-link">Discord</a>
-        <a href="https://youtube.com/@ordenflamingrose?si=r2qlSi5FmOnm_KME" target="_blank" class="footer-link">YouTube</a>
     </div>
 
     <script>
